@@ -141,7 +141,8 @@ class Ranger(Optimizer):
                     if N_sma > self.N_sma_threshhold:
                         step_size = math.sqrt((1 - beta2_t) * (N_sma - 4) / (N_sma_max - 4) * (N_sma - 2) / N_sma * N_sma_max / (N_sma_max - 2)) / (1 - beta1 ** state['step'])
                     else:
-                        step_size = 1.0 / (1 - beta1 ** state['step'])
+                        #step_size = 1.0 / (1 - beta1 ** state['step'])
+                        step_size = 0
                     buffered[2] = step_size
 
                 if group['weight_decay'] != 0:
