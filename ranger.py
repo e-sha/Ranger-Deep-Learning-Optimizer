@@ -146,7 +146,7 @@ class Ranger(Optimizer):
                     buffered[2] = step_size
 
                 if group['weight_decay'] != 0:
-                    p_data_fp32.add_(-group['weight_decay'] * group['lr'], p_data_fp32)
+                    p_data_fp32.mul_(1-group['weight_decay'] * group['lr'])
 
                 if N_sma > self.N_sma_threshhold:
                     denom = exp_avg_sq.sqrt().add_(group['eps'])
@@ -160,7 +160,7 @@ class Ranger(Optimizer):
                 #we do it at the param level instead of group level
                 if state['step'] % group['k'] == 0:
                     slow_p = state['slow_buffer'] #get access to slow param tensor
-                    slow_p.add_(self.alpha, p.data - slow_p)  #(fast weights - slow weights) * alpha
+                    slow_p.mul_(1 - self.alpha).add_(self.alpha, p.data)
                     p.data.copy_(slow_p)  #copy interpolated weights to RAdam param tensor
 
         return loss
